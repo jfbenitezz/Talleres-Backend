@@ -1,0 +1,19 @@
+Ejemplos de uso
+1. GET http://localhost:8080/users/hobby?hobby=swimming
+2. GET http://localhost:8080/users/exists?id=21
+3. GET http://localhost:8080/users/team-experience?team=clscwe
+4. GET http://localhost:8080/users/by-faction?faction=Empire
+5. POST http://localhost:8080/users 
+BODY:
+{ 
+    "id": 24, 
+    "name": "dada Restrepo", 
+    "carrera": "Psicologia",
+    "hobbies": [
+            "singing",
+            "walking",
+            "guitar"],
+    "years": 2,
+    "team": "clscwe",
+    "faction": "Rebels"
+}
