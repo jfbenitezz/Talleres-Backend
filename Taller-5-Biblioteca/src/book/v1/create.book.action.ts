@@ -1,12 +1,10 @@
-import { UserModel, UserType } from "./user.model";
-import { CreateUserType } from "./user.types";
+import { Book } from "./book.model";
+import { IBook } from "./book.types";
 
 // DECLARE ACTION FUNCTION
-async function createUserAction(userData: CreateUserType): Promise<UserType> {
-  const results = await UserModel.create(userData);
-
-  return results;
+async function createBookAction(bookData: IBook): Promise<IBook> {
+  const newBook = await Book.create(bookData);
+  return newBook;
 }
-
 // EXPORT ACTION FUNCTION
-export default createUserAction;
+export default createBookAction;

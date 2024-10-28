@@ -1,58 +1,101 @@
 import { Router, Request, Response } from "express";
-import { createUser, readUsers } from "./user.controller";
-import { CreateUserType } from "./user.types";
+import { createBook, readBooks, updateBook, readOneBook, deleteBook } from "./book.controller";
+import { IBook } from "./book.types";
 import { AuthMiddleware } from "../../middleware/auth";
-import { UserType } from "./user.model";
 
 // INIT ROUTES
-const userRoutes = Router();
+const bookRoutes = Router();
 
 // DECLARE ENDPOINT FUNCTIONS
-async function GetUsers(request: Request, response: Response) {
-  const users = await readUsers();
-
-  response.status(200).json({
-    message: "Success.",
-    users: users,
-  });
-}
-async function CreateUser(request: Request<CreateUserType>, response: Response) {
-  if (request.body.name === undefined) {
-    return response.status(400).json({
-      message: "Missing fields"
-    })
-  }
-
+async function CreateBook(request: Request<IBook>, response: Response) {
   try {
-    const users = await createUser(request.body);
-    
+    const book = await createBook(request.body);
     response.status(200).json({
       message: "Success.",
-      users: users,
+      book: book
     });
 
   } catch (error) {
     response.status(500).json({
-      message: "Failure",
+      message: "Failure creating book",
       information: (error as any).toString()
     })
   }
 }
-async function GetOneUser(request: Request<{user: UserType}>, response: Response) {
-  console.log(request.query)
-  console.log(request.body)
-  const users = await readUsers(request.body);
 
-  response.status(200).json({
-    message: "Success.",
-    users: users,
-  });
+async function GetBooks(request: Request, response: Response) {
+  try {
+    const books = await readBooks(request.body);
+    response.status(200).json({
+      message: "Success.",
+      books: books
+    });
+
+  } catch (error) {
+    response.status(500).json({
+      message: "Failure reading books", 
+      information: (error as any).toString()
+    })
+  }
 }
 
+async function GetOneBook(request: Request, response: Response) {
+  const id = request.params.id
+  try {
+    const book = await readOneBook(id);    
+    response.status(200).json({
+      message: "Success.",
+      book: book
+    });
+
+  } catch (error) {
+    response.status(500).json({
+      message: "Failure reading book",
+      information: (error as any).toString()
+    })
+  }
+}
+
+async function UpdateBook(request: Request<IBook>, response: Response) {
+  const id = request.params.id
+  try {
+    const book = await updateBook(id, request.body);    
+    response.status(200).json({
+      message: "Success.",
+      book: book
+    });
+
+  } catch (error) {
+    response.status(500).json({
+      message: "Failure updating book",
+      information: (error as any).toString()
+    })
+  }
+}
+
+async function DeleteBook(request: Request, response: Response) {
+  const id = request.params.id
+  try {
+    await deleteBook(id);    
+    response.status(200).json({
+      message: "Success.",
+    });
+
+  } catch (error) {
+    response.status(500).json({
+      message: "Failure deleting book",
+      information: (error as any).toString()
+    })
+  }
+}
+
+
 // DECLARE ENDPOINTS
-userRoutes.get("/", GetUsers);
-//userRoutes.get("/one", AuthMiddleware, GetOneUser);
-userRoutes.post("/", CreateUser);
+bookRoutes.get("/", GetBooks);
+bookRoutes.get("/one/:id", GetOneBook);
+bookRoutes.post("/", /*AuthMiddleware*/ CreateBook);
+bookRoutes.put("/:id", /*AuthMiddleware*/ UpdateBook);
+bookRoutes.delete("/:id", /*AuthMiddleware*/ deleteBook);
 
 // EXPORT ROUTES
-export default userRoutes;
+export default bookRoutes;

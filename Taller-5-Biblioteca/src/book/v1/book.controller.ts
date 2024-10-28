@@ -1,19 +1,33 @@
-import createUserAction from "./create.user.action";
-import readUserAction from "./read.user.action";
-import { UserType } from "./user.model";
-import { CreateUserType } from "./user.types";
+import createBookAction from './create.book.action';
+import {readBooksAction, readOneBookAction} from './read.book.action';
+import updateBookAction from './update.book.action';
+import deleteBookAction from './delete.book.action';
+import { IBook } from './book.types';
+import { FilterQuery } from "mongoose"; 
 
-// DECLARE CONTROLLER FUNCTIONS
-async function readUsers(body?: any): Promise<UserType[]> {
-  const users = await readUserAction();
 
-  return users;
-}
-async function createUser(userData: CreateUserType): Promise<UserType> {
-  const createdUser = await createUserAction(userData);
-
-  return createdUser;
+// Read books with filters
+async function readBooks(filters: FilterQuery<IBook>): Promise<IBook[]> {
+  return await readBooksAction(filters);
 }
 
-// EXPORT CONTROLLER FUNCTIONS
-export { readUsers, createUser };
+async function readOneBook(id: string): Promise<IBook | null> {
+  return await readOneBookAction(id);
+}
+// Create a new book
+async function createBook(bookData: IBook): Promise<IBook> {
+  return await createBookAction(bookData);
+}
+
+// Update an existing book
+async function updateBook(id: string, updatedData: Partial<IBook>): Promise<IBook | null> {
+  return await updateBookAction(id, updatedData);
+}
+
+// Soft delete a book
+async function deleteBook(id: string): Promise<void> {
+  await deleteBookAction(id);
+}
+
+// Export controller functions
+export { readBooks, readOneBook, createBook, updateBook, deleteBook};

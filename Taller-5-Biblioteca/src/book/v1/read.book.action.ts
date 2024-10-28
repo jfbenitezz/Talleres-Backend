@@ -1,11 +1,14 @@
-import { UserModel, UserType } from "./user.model";
+import { Book } from "./book.model";
+import { IBook } from "./book.types";
+import { FilterQuery } from "mongoose"; 
 
-// DECLARE ACTION FUNCTION
-async function readUserAction(): Promise<UserType[]> {
-  const results = await UserModel.find();
-
-  return results;
+async function readBooksAction(filters: FilterQuery<IBook>): Promise<IBook[]> {
+  const filterQuery: FilterQuery<IBook> = { softDeleted: false, ...filters } as FilterQuery<IBook>;
+  return await Book.find(filterQuery)
 }
 
-// EXPORT ACTION FUNCTION
-export default readUserAction;
+async function readOneBookAction(id: string): Promise<IBook | null> {
+  return await Book.findById(id);
+}
+
+export { readBooksAction, readOneBookAction };
