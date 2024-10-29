@@ -1,4 +1,10 @@
-import { UserType } from "./user.model";
+import { Document } from 'mongoose';
 
-export type CreateUserType = Omit<UserType, "_id">
-export type UpdateUserType = Omit<Partial<UserType>, "_id">
+interface IUser extends Document {
+  email: string;
+  password: string;
+  isAdmin: boolean;
+  softDeleted: boolean; 
+}
+
+export { IUser };

@@ -23,7 +23,7 @@ async function CreateBook(request: Request<IBook>, response: Response) {
     })
   }
 }
-const validKeys: (keyof IBook)[] = ["title", "author", "genre", "publicationDate", "publisher"];
+const validKeys: (keyof IBook)[] = ["title", "author", "genre", "publicationDate", "publisher", "softDeleted"];
 async function GetBooks(request: Request, response: Response) {
   try {
     const query = request.query as FilterQuery<IBook>;

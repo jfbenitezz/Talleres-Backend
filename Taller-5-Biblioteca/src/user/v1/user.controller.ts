@@ -1,19 +1,25 @@
 import createUserAction from "./create.user.action";
 import readUserAction from "./read.user.action";
-import { UserType } from "./user.model";
-import { CreateUserType } from "./user.types";
+import updateUserAction from "./update.user.action";
+import deleteUserAction from "./delete.user.action";
+
+import { IUser } from "./user.types";
 
 // DECLARE CONTROLLER FUNCTIONS
-async function readUsers(body?: any): Promise<UserType[]> {
-  const users = await readUserAction();
-
-  return users;
+async function readUser(id: string): Promise<IUser | null> {
+  return await readUserAction(id);
 }
-async function createUser(userData: CreateUserType): Promise<UserType> {
+async function createUser(userData: IUser): Promise<IUser> {
   const createdUser = await createUserAction(userData);
-
   return createdUser;
 }
 
+async function updateUser(id: string, updatedData: Partial<IUser>): Promise<IUser | null> {
+  return await updateUserAction(id, updatedData);
+}
+async function deleteUser(id: string): Promise<void> {
+  await deleteUserAction(id);
+}
+
 // EXPORT CONTROLLER FUNCTIONS
-export { readUsers, createUser };
+export { readUser, createUser, updateUser, deleteUser };

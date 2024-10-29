@@ -1,28 +1,24 @@
-import { model, Schema } from "mongoose";
+import { Schema, model } from 'mongoose';
+import { IUser } from './user.types';
+import bcrypt from 'bcrypt';
 
-// DECLARE MODEL TYPE
-type UserType = {
-    _id: string;
-    name: string;
-    cedula: string;
-};
-
-// DECLARE MONGOOSE SCHEMA
-const UserSchema = new Schema<UserType>({
-    name: {
-        type: String,
-        required: true
-    },
-    cedula: {
-        type: String
-    }
-},{
+const UserSchema = new Schema<IUser>({
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    softDeleted: { type: Boolean, default: false },
+    isAdmin: { type: Boolean, default: false }
+  }, {
     timestamps: true,
-    versionKey: false,
-});
+    versionKey: false
+  });
 
-// DECLARE MONGO MODEL
-const UserModel = model<UserType>("User", UserSchema);
-
-// EXPORT ALL
-export { UserModel, UserSchema, UserType };
+  UserSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next();
+  
+    const salt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS || '10'));
+    const pepper = process.env.PEPPER || '';
+    this.password = await bcrypt.hash(this.password + pepper, salt);
+    next();
+  });
+  
+  export const User = model<IUser>('User', UserSchema);

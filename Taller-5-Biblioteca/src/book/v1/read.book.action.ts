@@ -3,7 +3,8 @@ import { IBook } from "./book.types";
 import { FilterQuery } from "mongoose"; 
 
 async function readBooksAction(filters: FilterQuery<IBook>): Promise<IBook[]> {
-  const filterQuery: FilterQuery<IBook> = { ...filters, softDeleted: false } as FilterQuery<IBook>;
+  // Default only show if soft deleted is false but can be overridden
+  const filterQuery: FilterQuery<IBook> = {  softDeleted: false,...filters } as FilterQuery<IBook>;
   return await Book.find(filterQuery)
 }
 

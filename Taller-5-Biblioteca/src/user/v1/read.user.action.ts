@@ -1,10 +1,8 @@
-import { UserModel, UserType } from "./user.model";
-
+import { IUser } from "./user.types";
+import {User} from "./user.model";
 // DECLARE ACTION FUNCTION
-async function readUserAction(): Promise<UserType[]> {
-  const results = await UserModel.find();
-
-  return results;
+async function readUserAction(id: string): Promise<IUser | null> {
+  return await User.findOne({ email: id, softDeleted: false });
 }
 
 // EXPORT ACTION FUNCTION
