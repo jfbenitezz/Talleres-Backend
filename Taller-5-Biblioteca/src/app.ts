@@ -1,5 +1,6 @@
 import userRoutes from "./user/v1/user.routes";
 import bookRoutes from "./book/v1/book.routes";
+import loanRoutes from "./loan/v1/loan.routes";
 import express from "express";
 import { Request, Response } from "express";
 import cors from "cors";
@@ -25,7 +26,7 @@ export default function createApp() {
   
   app.use(SERVER_VERSION + "users", userRoutes);
   app.use(SERVER_VERSION + "books", bookRoutes);
-  app.use(SERVER_VERSION + "history", userRoutes);
+  app.use(SERVER_VERSION + "loans", loanRoutes);
 
   
   app.use(routeNotFound);

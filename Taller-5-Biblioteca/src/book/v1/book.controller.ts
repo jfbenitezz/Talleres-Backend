@@ -2,7 +2,8 @@ import createBookAction from './create.book.action';
 import {readBooksAction, readOneBookAction} from './read.book.action';
 import updateBookAction from './update.book.action';
 import deleteBookAction from './delete.book.action';
-import { IBook } from './book.types';
+import createBookInstanceAction from './create.bookInst.action';
+import { IBook, IBookInstance } from './book.types';
 import { FilterQuery } from "mongoose"; 
 
 
@@ -29,5 +30,10 @@ async function deleteBook(id: string): Promise<void> {
   await deleteBookAction(id);
 }
 
+async function createBookInstance(bookInstanceData: Partial<IBookInstance>): Promise<IBookInstance> {
+  return await createBookInstanceAction(bookInstanceData);
+}
+
+
 // Export controller functions
-export { readBooks, readOneBook, createBook, updateBook, deleteBook};
+export { readBooks, readOneBook, createBook, updateBook, deleteBook, createBookInstance };

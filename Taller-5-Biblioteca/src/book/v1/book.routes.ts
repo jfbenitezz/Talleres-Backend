@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { createBook, readBooks, updateBook, readOneBook, deleteBook } from "./book.controller";
+import { createBook, readBooks, updateBook, readOneBook, deleteBook, createBookInstance } from "./book.controller";
 import { IBook } from "./book.types";
 import { FilterQuery } from "mongoose"; 
 import { AuthMiddleware } from "../../middleware/auth";
@@ -119,6 +119,21 @@ async function DeleteBook(request: Request, response: Response) {
   }
 }
 
+async function CreateBookInstance (request: Request, response: Response) {
+  try {
+      const bookInstance = await createBookInstance(request.body);
+      response.status(200).json({
+          message: "Success.",
+          bookInstance: bookInstance
+      });
+  } catch (error) {
+      response.status(500).json({
+          message: "Failure creating book instance.",
+          information: (error as any).toString()
+      });
+  }
+}
+
 
 // DECLARE ENDPOINTS
 bookRoutes.get("/", GetBooks);
@@ -126,6 +141,7 @@ bookRoutes.get("/one/:id", GetOneBook);
 bookRoutes.post("/", /*AuthMiddleware*/ CreateBook);
 bookRoutes.put("/:id", /*AuthMiddleware*/ UpdateBook);
 bookRoutes.delete("/:id", /*AuthMiddleware*/ DeleteBook);
+bookRoutes.post("/copy", /*AuthMiddleware*/ CreateBookInstance);
 
 // EXPORT ROUTES
 export default bookRoutes;
