@@ -1,13 +1,13 @@
 import createUserAction from "./create.user.action";
-import readUserAction from "./read.user.action";
+import readUserAction from "./read.loginUser.action";
 import updateUserAction from "./update.user.action";
 import deleteUserAction from "./delete.user.action";
-
 import { IUser } from "./user.types";
+import { JwtPayload } from "jsonwebtoken";
 
 // DECLARE CONTROLLER FUNCTIONS
-async function readUser(id: string): Promise<IUser | null> {
-  return await readUserAction(id);
+async function readUser(userInput: Partial<IUser>): Promise<Partial<IUser> & JwtPayload | null> {
+  return await readUserAction(userInput);
 }
 async function createUser(userData: IUser): Promise<IUser> {
   const createdUser = await createUserAction(userData);

@@ -6,7 +6,8 @@ const UserSchema = new Schema<IUser>({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     softDeleted: { type: Boolean, default: false },
-    isAdmin: { type: Boolean, default: false }
+    name: { type: String, required: true },
+    permissions: { type: [String], default: [] }
   }, {
     timestamps: true,
     versionKey: false
@@ -20,5 +21,10 @@ const UserSchema = new Schema<IUser>({
     this.password = await bcrypt.hash(this.password + pepper, salt);
     next();
   });
+
+  UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+    const pepper = process.env.PEPPER || '';
+    return await bcrypt.compare(candidatePassword + pepper, this.password);
+  };
   
   export const User = model<IUser>('User', UserSchema);

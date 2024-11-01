@@ -7,10 +7,6 @@ async function createUserAction(userData: IUser): Promise<IUser> {
     throw new Error("Cannot create user with softDeleted set to true");
   }
 
-  if (userData.isAdmin) {
-    throw new Error("Cannot create user with isAdmin set to true");
-  }
-
   const emailExists = await User.exists({ email: userData.email });
   if (emailExists) {
     throw new Error("Email already exists");
