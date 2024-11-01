@@ -9,8 +9,8 @@ async function createLoan(loanData: ILoan): Promise<ILoan | null> {
     return await createLoanAction(loanData);
 }
 
-async function returnLoan(loanId: string): Promise<ILoan | null> {
-    return await returnLoanAction(loanId);
+async function returnLoan(loanId: string, jwtUserId: string): Promise<ILoan | null> {
+    return await returnLoanAction(loanId, jwtUserId);
 }
 
 async function createLoanAll(UserId: string, BookId: string): Promise<ILoan[] | null> {

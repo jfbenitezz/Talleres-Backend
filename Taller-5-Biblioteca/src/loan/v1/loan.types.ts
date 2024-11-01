@@ -21,14 +21,4 @@ interface ILoanWithUser extends ILoan {
 }
 
 
-interface IBookInstanceWithPartialInfo extends IBookInstance {
-  book: Schema.Types.ObjectId;
-  status: string;
-  location: string;
-}
-interface ILoanWithBookInstance extends ILoan {
-  bookInstanceInfo: IBookInstanceWithPartialInfo 
-  
-}
-
-export { ILoan, ILoanWithUser, ILoanWithBookInstance };
+export { ILoan, ILoanWithUser };

@@ -6,7 +6,7 @@ async function readBookLoanAction(bookId: string): Promise<ILoanWithUser[] | nul
     const bookInstanceLoans = await Loan.find({ bookInstance: bookId })
         .populate({
             path: 'user',
-            select: '-password -isAdmin -softDeleted' // Exclude these fields
+            select: '-password -isAdmin -softDeleted -permissions' // Exclude these fields
         });
 
     // Cast the result to ILoanWithUser[]

@@ -3,12 +3,13 @@ import { createBook, readBooks, updateBook, readOneBook, deleteBook, createBookI
 import { IBook } from "./book.types";
 import { FilterQuery } from "mongoose"; 
 import { AuthMiddleware } from "../../middleware/auth";
+import { requirePermissions }  from "../../middleware/permissions";
 
 // INIT ROUTES
 const bookRoutes = Router();
 
 // DECLARE ENDPOINT FUNCTIONS
-async function CreateBook(request: Request<IBook>, response: Response) {
+async function CreateBook(request: Request, response: Response) {
   try {
     const book = await createBook(request.body);
     response.status(200).json({
@@ -79,7 +80,7 @@ async function GetOneBook(request: Request, response: Response) {
   }
 }
 
-async function UpdateBook(request: Request<IBook>, response: Response) {
+async function UpdateBook(request: Request, response: Response) {
   const id = request.params.id
   try {
     const book = await updateBook(id, request.body);  
@@ -138,10 +139,11 @@ async function CreateBookInstance (request: Request, response: Response) {
 // DECLARE ENDPOINTS
 bookRoutes.get("/", GetBooks);
 bookRoutes.get("/one/:id", GetOneBook);
-bookRoutes.post("/", /*AuthMiddleware*/ CreateBook);
-bookRoutes.put("/:id", /*AuthMiddleware*/ UpdateBook);
-bookRoutes.delete("/:id", /*AuthMiddleware*/ DeleteBook);
-bookRoutes.post("/copy", /*AuthMiddleware*/ CreateBookInstance);
+// Protected routes
+bookRoutes.post("/", AuthMiddleware, requirePermissions(["BooksCreateRole"]), CreateBook); 
+bookRoutes.put("/:id", AuthMiddleware, requirePermissions(["BooksModifyRole"]), UpdateBook); 
+bookRoutes.delete("/:id", AuthMiddleware, requirePermissions(["BooksDeleteRole"]), DeleteBook); 
+bookRoutes.post("/copy", AuthMiddleware, requirePermissions(["BooksInstanceRole"]), CreateBookInstance); 
 
 // EXPORT ROUTES
 export default bookRoutes;

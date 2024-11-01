@@ -5,8 +5,10 @@ import { AuthMiddleware } from "../../middleware/auth";
 
 const loanRoutes = Router();
 
-async function CreateLoan (request: Request<ILoan>, response: Response) {
+async function CreateLoan (request: Request, response: Response) {
     try {
+        const jwtUserId = request.body.authorization.id;
+        request.body.user = jwtUserId;
         const loan = await createLoan(request.body);
         response.status(200).json({
             message: "Success.",
@@ -20,10 +22,11 @@ async function CreateLoan (request: Request<ILoan>, response: Response) {
     }
 }
 
-async function ReturnLoan (request: Request<ILoan>, response: Response) {
+async function ReturnLoan (request: Request, response: Response) {
     try {
+        const jwtUserId = request.body.authorization.id;
         const id = request.params.id
-        const loan = await returnLoan(id);
+        const loan = await returnLoan(id, jwtUserId);
         response.status(200).json({
             message: "Success.",
             loan: loan
@@ -36,9 +39,10 @@ async function ReturnLoan (request: Request<ILoan>, response: Response) {
     }
 }
 
-async function CreateLoanAll (request: Request<ILoan[]>, response: Response) {
+async function CreateLoanAll (request: Request, response: Response) {
     try {
-        const loan = await createLoanAll(request.body.UserId, request.body.BookId);
+        const jwtUserId = request.body.authorization.id;
+        const loan = await createLoanAll(jwtUserId, request.body.BookId);
         response.status(200).json({
             message: "Success.",
             loan: loan
@@ -51,7 +55,7 @@ async function CreateLoanAll (request: Request<ILoan[]>, response: Response) {
     }
 }
 
-async function ReadBookLoan (request: Request<ILoan>, response: Response) {
+async function ReadBookLoan (request: Request, response: Response) {
     try {
         const id = request.params.id
         const loan = await readBookLoan(id);
@@ -74,7 +78,7 @@ async function ReadBookLoan (request: Request<ILoan>, response: Response) {
     }
 }
 
-async function ReadUserLoan (request: Request<ILoan>, response: Response) {
+async function ReadUserLoan (request: Request, response: Response) {
     try {
         const id = request.params.id
         const loan = await readUserLoan(id);
@@ -98,11 +102,11 @@ async function ReadUserLoan (request: Request<ILoan>, response: Response) {
 }
 
 // DECLARE ENDPOINTS
-loanRoutes.post("/", /*AuthMiddleware*/ CreateLoan);
-loanRoutes.post("/return/:id", /*AuthMiddleware*/ ReturnLoan);
-loanRoutes.post("/all", /*AuthMiddleware*/ CreateLoanAll);
-loanRoutes.get("/book/:id", /*AuthMiddleware*/ ReadBookLoan);
-loanRoutes.get("/user/:id", /*AuthMiddleware*/ ReadUserLoan);
+loanRoutes.get("/book/:id", ReadBookLoan);
+loanRoutes.get("/user/:id", ReadUserLoan);
+loanRoutes.post("/", AuthMiddleware, CreateLoan);
+loanRoutes.post("/return/:id",AuthMiddleware , ReturnLoan);
+loanRoutes.post("/all", AuthMiddleware, CreateLoanAll);
 
 // EXPORT ROUTES
 export default loanRoutes;
